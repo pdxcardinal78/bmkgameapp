@@ -1,0 +1,11 @@
+{% extends "layout.html" %}
+{% block content %}
+    <h1>Available Wonders</h1>
+    {% for wonder in wonders %}
+        <article class="media content-section">
+            <div class="media-body">
+                <a class="mr-2" href="#">{{ wonder.wonder_name }}</a>
+            </div>
+        </article>
+    {% endfor %}
+{% endblock content %}

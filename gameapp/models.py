@@ -28,7 +28,6 @@ class Game(db.Model):
     img_file = db.Column(db.String(20), nullable=False, default='game.jpg')
     description = db.Column(db.String(200))
     publisher = db.Column(db.String(50))
-    sessions = db.relationship('Session', backref='boardgame', lazy=True)
 
     def __repr__(self):
         return f"Games('{self.gamename}', '{self.maxplayers}', '{self.img_file}')"
@@ -36,17 +35,33 @@ class Game(db.Model):
 
 class Session(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    img_file = db.Column(db.String(20), nullable=False)
     players = db.Column(db.Integer, nullable=False)
     play_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     game_id = db.Column(db.Integer, db.ForeignKey('game.id'), nullable=False)
 
     def __repr__(self):
-        return f"Session('{self.game_name}', '{self.img_file}', '{self.play_date}', '{self.players}')"
+        return f"Session('{self.game_name}', '{self.play_date}', '{self.players}')"
 
 
 class Scores(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     session_id = db.Column(db.Integer, db.ForeignKey('session.id'), nullable=False)
-    user_id = db.Column(db.String, db.ForeignKey('user.id'))
+    player_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    seat_position = db.Column(db.Integer, nullable=False)
+    total_score = db.Column(db.Integer, nullable=False)
+    seven_wonder = db.Column(db.Integer, db.ForeignKey('wonder.id'))
+    wonder_side = db.Column(db.String(10))
+    war_score = db.Column(db.Integer)
+    gold_score = db.Column(db.Integer)
+    blue_score = db.Column(db.Integer)
+    yellow_score = db.Column(db.Integer)
+    science_score = db.Column(db.Integer)
+    purple_score = db.Column(db.Integer)
+    armada_score = db.Column(db.Integer)
+    leader_city_score = db.Column(db.Integer)
+
+
+class Wonder(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    wonder_name = db.Column(db.String(20), nullable=False, unique=True)

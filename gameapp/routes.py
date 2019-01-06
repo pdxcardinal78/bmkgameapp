@@ -1,6 +1,9 @@
+import secrets
+from PIL import Image
+import os
 from flask import render_template, url_for, flash, redirect, request
 from gameapp import app, bcrypt
-from gameapp.forms import RegistrationForm, LoginForm, UpdateAccount
+from gameapp.forms import RegistrationForm, LoginForm, UpdateAccount, WonderForm, GameForm
 from gameapp.models import *
 from flask_login import login_user, current_user, logout_user, login_required
 
@@ -13,7 +16,7 @@ def home():
 
 @app.route("/sessions")
 def sessions():
-    return render_template('sessions.html', games=games)
+    return render_template('sessions.html')
 
 
 @app.route("/about")
@@ -59,17 +62,31 @@ def logout():
     return redirect(url_for('home'))
 
 
+def save_picture(form_picture):
+    random_hex = secrets.token_hex(8)
+    _, f_ext = os.path.splitext(form_picture.filename)
+    picture_fn = random_hex + f_ext
+    picture_path = os.path.join(app.root_path, 'static/profile_pics', picture_fn)
+
+    output_size = (125, 125)
+    i = Image.open(form_picture)
+    i.thumbnail(output_size)
+    i.save(picture_path)
+
+    return picture_fn
+
+
 @app.route("/account", methods=['GET', 'POST'])
 @login_required
 def account():
     form = UpdateAccount()
     if form.validate_on_submit():
-        #user = User(username=form.username.data, email=form.email.data)
+        if form.picture.data:
+            picture_file = save_picture(form.picture.data)
+            current_user.img_file = picture_file
         current_user.username = form.username.data
         current_user.email = form.email.data
-        current_user.save()
-        print(current_user.username, current_user.email)
-        session.commit()
+        db.session.commit()
         flash('Your account has been updated.', 'success')
         return redirect(url_for('account'))
     elif request.method == 'GET':
@@ -77,3 +94,60 @@ def account():
         form.email.data = current_user.email
     img_file = url_for('static', filename='profile_pics/' + current_user.img_file)
     return render_template('account.html', title='Account', img_file=img_file, form=form)
+
+
+@app.route("/wonder/new", methods=['GET', 'POST'])
+@login_required
+def new_wonder():
+    form = WonderForm()
+    if form.validate_on_submit():
+        wonder = Wonder(wonder_name=form.wonder.data)
+        db.session.add(wonder)
+        db.session.commit()
+        flash('A New Wonder Has Been Created', 'success')
+        return redirect(url_for('home'))
+    return render_template('create_wonder.html', title='New Wonder', form=form)
+
+
+@app.route("/wonder")
+@login_required
+def wonders():
+    wonder = Wonder.query.all()
+    return render_template('wonders.html', title='Wonders', wonders=wonder)
+
+
+def save_game_picture(game_picture):
+    random_hex = secrets.token_hex(8)
+    _, f_ext = os.path.splitext(game_picture.filename)
+    picture_fn = random_hex + f_ext
+    picture_path = os.path.join(app.root_path, 'static/game_pics', picture_fn)
+
+    output_size = (125, 125)
+    i = Image.open(game_picture)
+    i.thumbnail(output_size)
+    i.save(picture_path)
+
+    return picture_fn
+
+@app.route("/game/new", methods=['GET', 'POST'])
+@login_required
+def new_game():
+    form = GameForm()
+    if form.validate_on_submit():
+        if form.picture.data:
+            picture_file = save_game_picture(form.picture.data)
+            img = picture_file
+        game = Game(game_name=form.game_name.data, minplayers=form.minplayers.data, maxplayers=form.maxplayers.data,
+                    description=form.description.data, publisher=form.publisher.data, img_file=img)
+        db.session.add(game)
+        db.session.commit()
+        flash('This Game Has Been Added', 'success')
+        return redirect(url_for('home'))
+    img_file = url_for('static', filename='profile_pics/' + picture_file)
+    return render_template('create_game.html', title='Add New Game', form=form, img_file=img_file)
+
+
+@app.route("/game")
+def show_games():
+    game = Game.query.all()
+    return render_template('games.html', title='Games', games=game)

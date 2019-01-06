@@ -1,0 +1,61 @@
+{% extends "layout.html" %}
+{% block content %}
+
+    <div class="content-section">
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Create Game</legend>
+                <div class="form-group">
+                    {{ form.game_name.label(class="form-control-label") }}
+
+                    {% if form.game_name.errors %}
+                        {{ form.game_name(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.game_name.errors%}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.game_name(class="form-control form-control-lg") }}
+                    {% endif %}
+
+                </div>
+                <div class="form-group">
+                    {{ form.description.label(class="form-control-label") }}
+                    {{ form.description(class="form-control form-control-lg") }}
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col">{{ form.minplayers(class="form-control form-control-sm", value="min players") }}</div>
+                        {% if form.minplayers.errors %}
+                            <span class="text-danger">{{ error }}</span></br>
+                        {% endif %}
+                        <div class="col">{{ form.maxplayers(class="form-control form-control-sm", value="max players") }}</div>
+                        {% if form.maxplayers.errors %}
+                            <span class="text-danger">{{ errors }}</span></br>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="form-group">
+                    {{ form.publisher.label(class="form-control-label") }}
+                    {{ form.publisher(class="form-control form-control-sm") }}
+                </div>
+                <div class="form-group">
+                    {{ form.picture.label() }}
+                    {{ form.picture(class="form-control-file") }}
+                    {% if form.picture.errors %}
+                        {% for error in form.picture.errors %}
+                            <span class="text-danger">{{ error }}</span></br>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+
+            </fieldset>
+            <div class="form-group">
+                {{ form.submit(class="btn btn-outline-info") }}
+            </div>
+        </form>
+    </div>
+
+{% endblock content %}
