@@ -1,0 +1,11 @@
+{% extends "layout.html" %}
+{% block content %}
+    <h1>Available Games</h1>
+    {% for game in games %}
+        <article class="media content-section">
+            <div class="media-body">
+                <a class="mr-2" href="#">{{ game.gamename }}</a>
+            </div>
+        </article>
+    {% endfor %}
+{% endblock content %}

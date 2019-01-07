@@ -52,6 +52,22 @@ class UpdateAccount(FlaskForm):
                 raise ValidationError('An account already exists with this email address.')
 
 
+class RequestResetForm(FlaskForm):
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    submit = SubmitField('Request Password Reset')
+
+    def validate_email(self, email):
+        email = User.query.filter_by(email=email.data).first()
+        if email is None:
+            raise ValidationError('There is no account with that email. You must register first.')
+
+
+class ResetPasswordForm(FlaskForm):
+    password = PasswordField('Password', validators=[DataRequired()])
+    confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
+    submit = SubmitField('Reset Password')
+
+
 class WonderForm(FlaskForm):
     wonder = StringField('Wonder Name', validators=[DataRequired()])
     submit = SubmitField('Create')
@@ -78,7 +94,8 @@ class GameForm(FlaskForm):
     picture = FileField('Game Image', validators=[FileAllowed(['jpg', 'png'])])
     submit = SubmitField('Save Game')
 
-    def validate_gamename(self, game):
-        game = Game.query.filter_by(gamename=game.data).first()
-        if game:
-            raise ValidationError('Game already in database.')
+    def validate_game_name(self, game_name):
+        game_name = Game.query.filter_by(gamename=game_name.data).first()
+        if game_name:
+            raise ValidationError('Game Already Exists')
+
