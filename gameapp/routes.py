@@ -1,11 +1,11 @@
 import secrets
 from PIL import Image
 import os
-import datetime
+from datetime import datetime
 from flask import render_template, url_for, flash, redirect, request
 from gameapp import app, bcrypt, mail
 from gameapp.forms import (RegistrationForm, LoginForm, UpdateAccount, RequestResetForm, ResetPasswordForm,
-                           WonderForm, GameForm, GameUpdateForm, SessionForm)
+                           WonderForm, GameForm, GameUpdateForm, SessionForm, ScoresForm)
 from gameapp.models import *
 from flask_login import login_user, current_user, logout_user, login_required
 from flask_mail import Message
@@ -228,9 +228,26 @@ def update_game(game_id):
 @login_required
 def new_session():
     form = SessionForm()
-    if form.validate_on_submit():
-        session = Session(play_date=datetime.datetime.now(), user_id=current_user.id,
-                          game_id=form.game_played.data.id, players=1)
-        db.session.add(session)
-        db.commit()
+    if form.is_submitted():
+        try:
+            #if form.validate_on_submit(): (Validation not working on form.game_played)
+            session = Session(play_date=form.dateplayed.data, user_id=current_user.id,
+                              game_id=form.game_played.data.id, players=form.players.data)
+            db.session.add(session)
+            db.session.commit()
+            flash('This Game Session Has Been Created', 'success')
+            #session_id = Session.query.filter_by(user_id=current_user.id).order_by('-id').first().id
+            #playercount = Session.query.filter_by(user_id=current_user.id).order_by('-id').first().players
+            return redirect(url_for('score')), session.id, session.players
+        except:
+            flash('Game Session Was Not Created, Please select a game.', 'danger')
+            return redirect(url_for('new_session'))
     return render_template('new_session.html', title='Create Game Instance', form=form)
+
+
+@app.route("/score", methods=['GET', 'POST'])
+@login_required
+def score():
+    form = ScoresForm()
+    players = 2
+    return render_template('score.html', title='Enter Scores', form=form, playercount=players)

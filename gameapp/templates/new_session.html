@@ -7,9 +7,23 @@
             <fieldset class="form-group">
                 <legend class="border-bottom mb-4">Create New Game Session</legend>
                 <div class="form-group">
+                    {{ form.dateplayed.label(class="form-control-label") }}
+                    {{ form.dateplayed(class="form-control datepicker") }}
+                    <ul>
+                        {% for error in form.dateplayed.errors %}
+                        <li style="color:red;">{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+
                     {{ form.game_played(class="form-control") }}
                     <ul>
                         {% for error in form.game_played.errors %}
+                        <li style="color:red;">{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                    {{ form.players(class="form-control") }}
+                    <ul>
+                        {% for error in form.players.errors %}
                         <li style="color:red;">{{ error }}</li>
                         {% endfor %}
                     </ul>

@@ -3,8 +3,9 @@ from flask_wtf.file import FileField, FileAllowed
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField, IntegerField, TextAreaField
 from wtforms_sqlalchemy.fields import QuerySelectField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
-from gameapp.models import User, Wonder, Game
+from gameapp.models import User, Wonder, Game, Scores
 from flask_login import current_user
+from wtforms.fields.html5 import DateField
 
 
 class RegistrationForm(FlaskForm):
@@ -84,8 +85,10 @@ def game_query():
 
 
 class SessionForm(FlaskForm):
-    game_played = QuerySelectField(query_factory=game_query, allow_blank=True, blank_text='Select Game', get_label='gamename')
-    players = SelectField()
+    choices = [('0', 'Enter Players'), ('1', '1'), ('2', '2'), ('3', '3'), ('4', '4'), ('5', '5'), ('6', '6'), ('7', '7'), ('8', '8'), ('9', '9'), ('10', '10')]
+    dateplayed = DateField('Date Played', format='%Y-%m-%d', validators=[DataRequired()])
+    game_played = QuerySelectField(query_factory=game_query, allow_blank=True, blank_text='Select Game', get_label='gamename', validators=[DataRequired()])
+    players = SelectField('Number of Players', choices=choices, coerce=int)
     submit = SubmitField('Create Session')
 
 
@@ -118,5 +121,29 @@ class GameUpdateForm(FlaskForm):
             game_name = Game.query.filter_by(gamename=game_name.data).first()
             if game_name:
                 raise ValidationError('Game Already Exists')
+
+
+def WonderQuery():
+    return Wonder.query
+
+
+def PlayerQuery():
+    return User.query
+
+
+class ScoresForm(FlaskForm):
+    player = QuerySelectField(query_factory=PlayerQuery, allow_blank=True, blank_text='Select Player', get_label='username')
+    total_score = IntegerField('Total', validators=[DataRequired()])
+    wonder = QuerySelectField(query_factory=WonderQuery, allow_blank=True, blank_text='Select Wonder', get_label='wonder_name')
+    wonder_side = SelectField('Wonder Side', choices=[('A', 'A'), ('B', 'B')])
+    war_score = IntegerField('War Score')
+    gold_score = IntegerField('Gold Score')
+    blue_score = IntegerField('Civic Score')
+    yellow_score = IntegerField('Commerce Score')
+    science_score = IntegerField('Science Score')
+    purple_score = IntegerField('Guild Score')
+    armada_score = IntegerField('Armada Score')
+    leader_city_score = IntegerField('Leader/Cities Score')
+    submit = SubmitField('Save Scores')
 
 

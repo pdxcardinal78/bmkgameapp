@@ -1,0 +1,64 @@
+{% extends "layout.html" %}
+{% block content %}
+
+    <div class="content-section">
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">{{ Title }}</legend>
+                <div class="form-group">
+
+                    <table class="Table">
+                        <thread>
+                            <tr>
+                                <th scope="col">Player Name</th>
+                                <th scope="col">Wonder</th>
+                                <th scope="col">Wonder Side</th>
+                                <th scope="col"><a class="thumbnail">
+                                    <img class="thumbnail"  src="/static/score_pics/war.png" width="100" height="50" alt="War Score"></a></th>
+                                <th scope="col"><a class="thumbnail">
+                                    <img class="thumbnail" src="/static/score_pics/gold.png" width="100" height="50" alt="Gold Score"></a></th>
+                                <th scope="col"><a class="thumbnail">
+                                    <img class="thumbnail"  src="/static/score_pics/civic.png" width="100" height="50" alt="Civic Score"></a></th>
+                                <th scope="col">Commerce Score</th>
+                                <th scope="col"><a class="thumbnail">
+                                    <img class="thumbnail" src="/static/score_pics/science.png" width="100" height="50" alt="Science Score"></a></th>
+                                <th scope="col">Guild Score</th>
+                                <th scope="col"><a class="thumbnail">
+                                    <img class="thumbnail" src="/static/score_pics/leaders.png" width="50" height="50" alt="Leaders Score"></a></th>
+                                <th scope="col">Armada Score</th>
+                                <th scope="col">Total Score</th>
+
+                            </tr>
+                        </thread>
+                        <tbody>
+                            {% for i in range(2) %}
+                                <tr>
+                                    <th scope="row">{{ form.player(class="form-control") }}</th>
+                                    <th scope="row">{{ form.wonder(class="form-control") }}</th>
+                                    <th scope="row">{{ form.wonder_side(class="form-control") }}</th>
+                                    <th scope="row">{{ form.war_score(class="form-control") }}</th>
+                                    <th scope="row">{{ form.gold_score(class="form-control") }}</th>
+                                    <th scope="row">{{ form.blue_score(class="form-control") }}</th>
+                                    <th scope="row">{{ form.yellow_score(class="form-control") }}</th>
+                                    <th scope="row">{{ form.science_score(class="form-control") }}</th>
+                                    <th scope="row">{{ form.purple_score(class="form-control") }}</th>
+                                    <th scope="row">{{ form.leader_city_score(class="form-control") }}</th>
+                                    <th scope="row">{{ form.armada_score(class="form-control") }}</th>
+                                    <th scope="row">{{ form.total_score(class="form-control") }}</th>
+
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+
+                    </ul>
+                </div>
+                    <div class="form-group">
+                        {{ form.submit(class="btn btn-outline-info") }}
+                    </div>
+            </fieldset>
+        </form>
+    </div>
+{% endblock content %}
