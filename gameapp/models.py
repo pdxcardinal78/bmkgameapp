@@ -42,6 +42,7 @@ class Game(db.Model):
     img_file = db.Column(db.String(20), nullable=False, default='game.jpg')
     description = db.Column(db.String(200))
     publisher = db.Column(db.String(50))
+    sessions = db.relationship('Session', backref='game', lazy=True)
 
     def __repr__(self):
         return f"Games('{self.gamename}', '{self.maxplayers}', '{self.img_file}')"

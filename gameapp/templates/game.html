@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+{% block content %}
+        <article class="media content-section">
+            <img class="img-thumbnail" src="{{ url_for('static', filename='game_pics/' + game.img_file) }}">
+            <div class="media-body px-2">
+                <div class="article-metadata">
+                    <a class="mr-2">{{ game.publisher }}</a>
+                    <div>
+                        <a class="btn btn-secondary btn-sm m-1 pull-right" href="{{ url_for('update_game', game_id=game.id)}}">Update</a>
+                    </div>
+                </div>
+                <h2 class="article-title">{{ game.gamename }}</h2>
+                <p class="article-content">{{ game.description }}</p>
+                <h6 class="text-muted px-2">For {{ game.minplayers }} - {{ game.maxplayers }} players</h6>
+
+            </div>
+        </article>
+{% endblock content %}

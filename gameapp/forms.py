@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, DateField, IntegerField, TextAreaField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField, IntegerField, TextAreaField
+from wtforms_sqlalchemy.fields import QuerySelectField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 from gameapp.models import User, Wonder, Game
 from flask_login import current_user
@@ -78,11 +79,14 @@ class WonderForm(FlaskForm):
             raise ValidationError('Wonder already in database.')
 
 
+def game_query():
+    return Game.query
+
+
 class SessionForm(FlaskForm):
-    date = DateField('Game Date', validators=[DataRequired()])
-    game_played = IntegerField('Game Played', validators=[DataRequired()])
-    players = IntegerField('Players', validators=[DataRequired()])
-    create_session = SubmitField('Create Session')
+    game_played = QuerySelectField(query_factory=game_query, allow_blank=True, blank_text='Select Game', get_label='gamename')
+    players = SelectField()
+    submit = SubmitField('Create Session')
 
 
 class GameForm(FlaskForm):
@@ -91,11 +95,28 @@ class GameForm(FlaskForm):
     maxplayers = IntegerField('Max Players', validators=[DataRequired()])
     description = TextAreaField('Description', validators=[DataRequired()])
     publisher = StringField('Publisher', validators=[DataRequired()])
-    picture = FileField('Game Image', validators=[FileAllowed(['jpg', 'png'])])
+    game_picture = FileField('Game Image', validators=[FileAllowed(['jpg', 'png'])])
     submit = SubmitField('Save Game')
 
     def validate_game_name(self, game_name):
         game_name = Game.query.filter_by(gamename=game_name.data).first()
         if game_name:
             raise ValidationError('Game Already Exists')
+
+
+class GameUpdateForm(FlaskForm):
+    game_name = StringField('Game Name', validators=[DataRequired()])
+    minplayers = IntegerField('Min Players', validators=[DataRequired()])
+    maxplayers = IntegerField('Max Players', validators=[DataRequired()])
+    description = TextAreaField('Description', validators=[DataRequired()])
+    publisher = StringField('Publisher', validators=[DataRequired()])
+    game_picture = FileField('Game Image', validators=[FileAllowed(['jpg', 'png'])])
+    submit = SubmitField('Save Game')
+
+    def validate_game_name(self, game_name):
+        if game_name.data != 1:
+            game_name = Game.query.filter_by(gamename=game_name.data).first()
+            if game_name:
+                raise ValidationError('Game Already Exists')
+
 

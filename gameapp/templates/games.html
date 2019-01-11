@@ -3,8 +3,13 @@
     <h1>Available Games</h1>
     {% for game in games %}
         <article class="media content-section">
+            <img class="rounded-circle article-img" src="{{ url_for('static', filename='game_pics/' + game.img_file) }}">
             <div class="media-body">
-                <a class="mr-2" href="#">{{ game.gamename }}</a>
+                <div class="article-metadata">
+                    <a class="mr-2">{{ game.publisher }}</a>
+                </div>
+                <h2><a class="article-title" href="{{ url_for('game', game_id=game.id) }}">{{ game.gamename }}</a></h2>
+                <p class="article-content">{{ game.description }}</p>
             </div>
         </article>
     {% endfor %}

@@ -1,10 +1,11 @@
 import secrets
 from PIL import Image
 import os
+import datetime
 from flask import render_template, url_for, flash, redirect, request
 from gameapp import app, bcrypt, mail
 from gameapp.forms import (RegistrationForm, LoginForm, UpdateAccount, RequestResetForm, ResetPasswordForm,
-                           WonderForm, GameForm)
+                           WonderForm, GameForm, GameUpdateForm, SessionForm)
 from gameapp.models import *
 from flask_login import login_user, current_user, logout_user, login_required
 from flask_mail import Message
@@ -14,11 +15,6 @@ from flask_mail import Message
 @app.route("/home")
 def home():
     return render_template('home.html')
-
-
-@app.route("/sessions")
-def sessions():
-    return render_template('sessions.html')
 
 
 @app.route("/about")
@@ -109,7 +105,6 @@ If you did not make this request, then simply ignore this email and no changes w
     mail.send(msg)
 
 
-
 @app.route("/reset_password", methods=['GET', 'POST'])
 def reset_request():
     if current_user.is_authenticated:
@@ -155,20 +150,19 @@ def new_wonder():
 
 
 @app.route("/wonder")
-@login_required
 def wonders():
     wonder = Wonder.query.all()
     return render_template('wonders.html', title='Wonders', wonders=wonder)
 
 
-def save_game_picture(game_picture):
+def save_game_picture(form_picture):
     random_hex = secrets.token_hex(8)
-    _, f_ext = os.path.splitext(game_picture.filename)
+    _, f_ext = os.path.splitext(form_picture.filename)
     picture_fn = random_hex + f_ext
     picture_path = os.path.join(app.root_path, 'static/game_pics', picture_fn)
 
     output_size = (125, 125)
-    i = Image.open(game_picture)
+    i = Image.open(form_picture)
     i.thumbnail(output_size)
     i.save(picture_path)
 
@@ -178,23 +172,65 @@ def save_game_picture(game_picture):
 @app.route("/game/new", methods=['GET', 'POST'])
 @login_required
 def new_game():
-    img = ''
     form = GameForm()
     if form.validate_on_submit():
-        if form.picture.data:
-            picture_file = save_game_picture(form.picture.data)
-            img = picture_file
+        if form.game_picture.data:
+            picture = save_game_picture(form.game_picture.data)
+
         game = Game(gamename=form.game_name.data, minplayers=form.minplayers.data, maxplayers=form.maxplayers.data,
-                    description=form.description.data, publisher=form.publisher.data, img_file=img)
+                    description=form.description.data, publisher=form.publisher.data, img_file=picture)
         db.session.add(game)
         db.session.commit()
         flash('This Game Has Been Added', 'success')
         return redirect(url_for('show_games'))
-    img_file = url_for('static', filename='game_pics/' + img)
-    return render_template('create_game.html', title='Add New Game', form=form, img_file=img_file)
+    return render_template('create_game.html', title='Add New Game', form=form, legend='New Game')
 
 
 @app.route("/game")
 def show_games():
     game = Game.query.all()
     return render_template('games.html', title='Games', games=game)
+
+
+@app.route("/game/<int:game_id>")
+def game(game_id):
+    game = Game.query.get_or_404(game_id)
+    return render_template('game.html', title=game.gamename, game=game)
+
+
+@app.route("/game/<int:game_id>/update", methods=['GET', 'POST'])
+@login_required
+def update_game(game_id):
+    game = Game.query.get_or_404(game_id)
+    form = GameUpdateForm()
+    if form.validate_on_submit():
+        if form.game_picture.data:
+            picture = save_game_picture(form.game_picture.data)
+            game.img_file = picture
+        game.gamename = form.game_name.data
+        game.publisher = form.publisher.data
+        game.minplayers = form.minplayers.data
+        game.maxplayers = form.maxplayers.data
+        game.description = form.description.data
+        db.session.commit()
+        flash('This game has been updated!', 'success')
+        return redirect(url_for('game', game_id=game.id))
+    elif request.method == 'GET':
+        form.game_name.data = game.gamename
+        form.minplayers.data = game.minplayers
+        form.maxplayers.data = game.maxplayers
+        form.publisher.data = game.publisher
+        form.description.data = game.description
+    return render_template('create_game.html', title='Update Game', form=form, legend='Update Post')
+
+
+@app.route("/session", methods=['GET', 'POST'])
+@login_required
+def new_session():
+    form = SessionForm()
+    if form.validate_on_submit():
+        session = Session(play_date=datetime.datetime.now(), user_id=current_user.id,
+                          game_id=form.game_played.data.id, players=1)
+        db.session.add(session)
+        db.commit()
+    return render_template('new_session.html', title='Create Game Instance', form=form)

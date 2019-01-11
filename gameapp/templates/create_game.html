@@ -2,10 +2,10 @@
 {% block content %}
 
     <div class="content-section">
-        <form method="POST" action="">
+        <form method="POST" action="" enctype="multipart/form-data">
             {{ form.hidden_tag() }}
             <fieldset class="form-group">
-                <legend class="border-bottom mb-4">Create Game</legend>
+                <legend class="border-bottom mb-4">{{ legend }}</legend>
                 <div class="form-group">
                     {{ form.game_name.label(class="form-control-label") }}
 
@@ -48,9 +48,9 @@
                     {{ form.publisher(class="form-control form-control-sm") }}
                 </div>
                 <div class="form-group">
-                    {{ form.picture.label() }}
-                    {{ form.picture(class="form-control-file") }}
-                    {% if form.picture.errors %}
+                    {{ form.game_picture.label() }}
+                    {{ form.game_picture(class="form-control-file") }}
+                    {% if form.game_picture.errors %}
                         {% for error in form.picture.errors %}
                             <span class="text-danger">{{ error }}</span></br>
                         {% endfor %}

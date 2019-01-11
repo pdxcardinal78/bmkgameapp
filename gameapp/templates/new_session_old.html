@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+{% block content %}
+
+    <div class="content-section">
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Create New Game Session</legend>
+                <div class="form-group">
+                    {{ form.game_played.label(class="form-control-label") }}
+                      <div class="form-group">
+                          <select class="form-control" id="gameselect1">
+                              {% for game in games %}
+                              <option>{{ game.gamename }}</option>
+                              {% endfor %}
+                          </select>
+                      </div>
+                    {{ form.players.label(class="form-control-label") }}
+                      <div class="form-group">
+                        <select class="form-control" id="gameselect2">
+                            {% for i in range(1,11) %}
+                            <option>{{ i }}</option>
+                            {% endfor %}
+                        </select>
+                      </div>
+                    <div class="form-group">
+                        {{ form.submit(class="btn btn-outline-info") }}
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+{% endblock content %}
