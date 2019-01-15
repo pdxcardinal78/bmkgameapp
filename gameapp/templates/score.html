@@ -7,45 +7,45 @@
             <fieldset class="form-group">
                 <legend class="border-bottom mb-4">{{ Title }}</legend>
                 <div class="form-group">
-
                     <table class="Table">
                         <thread>
                             <tr>
-                                <th scope="col">Player Name</th>
-                                <th scope="col">Wonder</th>
-                                <th scope="col">Wonder Side</th>
-                                <th scope="col"><a class="thumbnail">
-                                    <img class="thumbnail"  src="/static/score_pics/war.png" width="100" height="50" alt="War Score"></a></th>
-                                <th scope="col"><a class="thumbnail">
-                                    <img class="thumbnail" src="/static/score_pics/gold.png" width="100" height="50" alt="Gold Score"></a></th>
-                                <th scope="col"><a class="thumbnail">
-                                    <img class="thumbnail"  src="/static/score_pics/civic.png" width="100" height="50" alt="Civic Score"></a></th>
-                                <th scope="col">Commerce Score</th>
-                                <th scope="col"><a class="thumbnail">
-                                    <img class="thumbnail" src="/static/score_pics/science.png" width="100" height="50" alt="Science Score"></a></th>
-                                <th scope="col">Guild Score</th>
-                                <th scope="col"><a class="thumbnail">
-                                    <img class="thumbnail" src="/static/score_pics/leaders.png" width="50" height="50" alt="Leaders Score"></a></th>
-                                <th scope="col">Armada Score</th>
-                                <th scope="col">Total Score</th>
+                                <th scope="col" width="15%">Player Name</th>
+                                <th scope="col" width="15%">Wonder</th>
+                                <th scope="col" width="7%">Wonder Side</th>
+                                <th scope="col" width="7%"><a class="thumbnail-center">
+                                    <img class="thumbnail-center"  src="/static/score_pics/war.png" width="100" height="50" alt="War Score"></a></th>
+                                <th scope="col" width="7%"><a class="thumbnail-center">
+                                    <img class="thumbnail-center" src="/static/score_pics/gold.png" width="100" height="50" alt="Gold Score"></a></th>
+                                <th scope="col" width="7%"><a class="thumbnail-center">
+                                    <img class="thumbnail-center"  src="/static/score_pics/civic.png" width="100" height="50" alt="Civic Score"></a></th>
+                                <th scope="col" width="7%">Commerce Score</th>
+                                <th scope="col" width="7%"><a class="thumbnail-center">
+                                    <img class="thumbnail-center" src="/static/score_pics/science.png" width="100" height="50" alt="Science Score"></a></th>
+                                <th scope="col" width="7%">Guild Score</th>
+                                <th scope="col" width="7%"><a class="thumbnail-center">
+                                    <img class="thumbnail-center" src="/static/score_pics/leaders.png" width="50" height="50" alt="Leaders Score"></a></th>
+                                <th scope="col" width="7%">Armada Score</th>
+                                <th scope="col" width="7%">Total Score</th>
 
                             </tr>
                         </thread>
                         <tbody>
                             {% for i in range(2) %}
                                 <tr>
-                                    <th scope="row">{{ form.player(class="form-control") }}</th>
-                                    <th scope="row">{{ form.wonder(class="form-control") }}</th>
-                                    <th scope="row">{{ form.wonder_side(class="form-control") }}</th>
-                                    <th scope="row">{{ form.war_score(class="form-control") }}</th>
-                                    <th scope="row">{{ form.gold_score(class="form-control") }}</th>
-                                    <th scope="row">{{ form.blue_score(class="form-control") }}</th>
-                                    <th scope="row">{{ form.yellow_score(class="form-control") }}</th>
-                                    <th scope="row">{{ form.science_score(class="form-control") }}</th>
-                                    <th scope="row">{{ form.purple_score(class="form-control") }}</th>
-                                    <th scope="row">{{ form.leader_city_score(class="form-control") }}</th>
-                                    <th scope="row">{{ form.armada_score(class="form-control") }}</th>
-                                    <th scope="row">{{ form.total_score(class="form-control") }}</th>
+                                    <th scope="row" id="player">{{ form.player(class="form-control") }}</th>
+                                    <th scope="row" id="wonder">{{ form.wonder(class="form-control") }}</th>
+                                    <th scope="row" id="wonder_side">{{ form.wonder_side(class="form-control") }}</th>
+                                    <th scope="row" id="war">{{ form.war_score(class="form-control") }}</th>
+                                    <th scope="row" id="gold">{{ form.gold_score(class="form-control") }}</th>
+                                    <th scope="row" id="blue">{{ form.blue_score(class="form-control") }}</th>
+                                    <th scope="row" id="yellow">{{ form.yellow_score(class="form-control") }}</th>
+                                    <th scope="row" id="science">{{ form.science_score(class="form-control") }}</th>
+                                    <th scope="row" id="purple">{{ form.purple_score(class="form-control") }}</th>
+                                    <th scope="row" id="leader">{{ form.leader_city_score(class="form-control") }}</th>
+                                    <th scope="row" id="armada">{{ form.armada_score(class="form-control") }}</th>
+                                    <th scope="row" id="total">{{ form.total_score(class="form-control") }}</th>
+                                    <th scope="row" id="submit">{{ form.submit(class="btn btn-outline-info") }}</th>
 
                                 </tr>
                             {% endfor %}
@@ -55,10 +55,9 @@
 
                     </ul>
                 </div>
-                    <div class="form-group">
-                        {{ form.submit(class="btn btn-outline-info") }}
-                    </div>
+
             </fieldset>
         </form>
     </div>
+
 {% endblock content %}

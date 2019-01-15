@@ -236,8 +236,6 @@ def new_session():
             db.session.add(session)
             db.session.commit()
             flash('This Game Session Has Been Created', 'success')
-            #session_id = Session.query.filter_by(user_id=current_user.id).order_by('-id').first().id
-            #playercount = Session.query.filter_by(user_id=current_user.id).order_by('-id').first().players
             return redirect(url_for('score')), session.id, session.players
         except:
             flash('Game Session Was Not Created, Please select a game.', 'danger')
@@ -250,4 +248,13 @@ def new_session():
 def score():
     form = ScoresForm()
     players = 2
+    if form.validate_on_submit():
+        score = Scores(session_id=3, player_id=form.player.data.id, seat_position=1, total_score=form.total_score.data,
+                       seven_wonder=form.wonder.data.id, wonder_side=form.wonder_side.data, war_score=form.war_score.data,
+                       gold_score=form.gold_score.data, yellow_score=form.yellow_score.data, blue_score=form.blue_score.data,
+                       purple_score=form.purple_score.data, leader_city_score=form.leader_city_score.data, armada_score=form.armada_score.data,
+                       science_score=form.science_score.data)
+        db.session.add(score)
+        db.session.commit()
+        flash('Game Scores Saved for ' + str(form.player.data.username), 'success')
     return render_template('score.html', title='Enter Scores', form=form, playercount=players)
